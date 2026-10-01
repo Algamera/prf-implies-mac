@@ -1,0 +1,32 @@
+package MAC_real {
+    params {
+        n: Integer,
+        prf: fn Bits(n), Bits(n) -> Bits(n),
+    }
+
+    state {
+        k: Maybe(Bits(n)),
+    }
+
+    oracle Mac(x: Bits(n)) -> Bits(n) {
+        if (k == None) {
+            fresh <-$ Bits(n);
+            k <- Some(fresh);
+        }
+        return prf(Unwrap(k), x);
+    }
+
+    oracle Verify(x: Bits(n), t: Bits(n)) -> Integer {
+        if (k == None) {
+            fresh <-$ Bits(n);
+            k <- Some(fresh);
+        }
+
+        y <- prf(Unwrap(k), x);
+
+        if (t == y) {
+            return 1;
+        }
+        return 0;
+    }
+}

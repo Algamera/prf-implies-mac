@@ -1,0 +1,26 @@
+composition R1_ideal {
+    const n: Integer;
+    const prf: fn Bits(n), Bits(n) -> Bits(n);
+
+    instance prf_ideal = Prf_ideal {
+        params {
+            n: n,
+        }
+    }
+
+    instance reduc = R1 {
+        params {
+            n: n,
+        }
+    }
+
+    compose {
+        adversary: {
+            Mac: reduc,
+            Verify: reduc,
+        },
+        reduc: {
+            Eval: prf_ideal,
+        },
+    }
+}
