@@ -1,0 +1,17 @@
+package Prf_ideal {
+    params {
+        n: Integer,
+    }
+    state {
+        table: Table(Bits(n), Bits(n)),
+    }
+
+    oracle Eval(x: Bits(n)) -> Bits(n) {
+        if (table[x] == None) {
+            t <-$ Bits(n);
+            table[x] <- Some(t);
+        }
+
+        return Unwrap(table[x]);
+    }
+}

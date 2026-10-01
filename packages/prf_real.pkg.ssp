@@ -1,0 +1,18 @@
+package Prf_real {
+    params {
+        n: Integer,
+        prf: fn Bits(n), Bits(n) -> Bits(n),
+    }
+    state {
+        k: Maybe(Bits(n)),
+    }
+
+    oracle Eval(x: Bits(n)) -> Bits(n) {
+        if (k == None) {
+            t <-$ Bits(n);
+            k <- Some(t);
+        }
+
+        return prf(Unwrap(k), x);
+    }
+}

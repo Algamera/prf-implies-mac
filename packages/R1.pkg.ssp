@@ -1,0 +1,23 @@
+package R1 {
+    params {
+        n: Integer,
+    }
+
+    import oracles {
+        Eval(x: Bits(n)) -> Bits(n),
+    }
+
+    oracle Mac(x: Bits(n)) -> Bits(n) {
+        t <- invoke Eval(x);
+        return t;
+    }
+
+    oracle Verify(x: Bits(n), t: Bits(n)) -> Integer {
+        y <- invoke Eval(x);
+
+        if (t == y) {
+            return 1;
+        }
+        return 0;
+    }
+}
