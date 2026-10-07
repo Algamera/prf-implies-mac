@@ -1,0 +1,17 @@
+composition MAC_real_comp {
+    const n: Integer;
+    const prf: fn Bits(n), Bits(n) -> Bits(n);
+
+    instance mac_real = MAC_real {
+        params {
+            n: n,
+            prf: prf,
+        }
+    }
+    compose {
+        adversary: {
+            Mac: mac_real,
+            Verify: mac_real,
+        },
+    }
+}

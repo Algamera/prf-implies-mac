@@ -1,0 +1,31 @@
+package R2 {
+    params {
+        n: Integer,
+    }
+
+    import oracles {
+        Eval(x: Bits(n)) -> Bits(n),
+    }
+
+    state {
+        table: Table(Bits(n), Bits(n)),
+    }
+
+    oracle Mac(x: Bits(n)) -> Bits(n) {
+        t <- invoke Eval(x);
+        table[x] <- Some(t);
+        return t;
+    }
+
+    oracle Verify(x: Bits(n), t: Bits(n)) -> Integer {
+        if (table[x] == None) {
+            return 0;
+        }
+
+        if (t == Unwrap(table[x])) {
+            return 1;
+        }
+
+        return 0;
+    }
+}

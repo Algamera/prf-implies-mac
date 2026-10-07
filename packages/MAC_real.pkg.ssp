@@ -10,7 +10,7 @@ package MAC_real {
 
     oracle Mac(x: Bits(n)) -> Bits(n) {
         if (k == None) {
-            fresh <-$ Bits(n);
+            fresh <-$ Bits(n) sample-name k;
             k <- Some(fresh);
         }
         return prf(Unwrap(k), x);
@@ -18,7 +18,7 @@ package MAC_real {
 
     oracle Verify(x: Bits(n), t: Bits(n)) -> Integer {
         if (k == None) {
-            fresh <-$ Bits(n);
+            fresh <-$ Bits(n) sample-name k;
             k <- Some(fresh);
         }
 

@@ -9,7 +9,7 @@ package Prf_real {
 
     oracle Eval(x: Bits(n)) -> Bits(n) {
         if (k == None) {
-            t <-$ Bits(n);
+            t <-$ Bits(n) sample-name k;
             k <- Some(t);
         }
 

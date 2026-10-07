@@ -1,0 +1,25 @@
+composition R2_ideal {
+    const n: Integer;
+
+    instance prf_ideal = Prf_ideal {
+        params {
+            n: n,
+        }
+    }
+
+    instance reduc = R2 {
+        params {
+            n: n,
+        }
+    }
+
+    compose {
+        adversary: {
+            Mac: reduc,
+            Verify: reduc,
+        },
+        reduc: {
+            Eval: prf_ideal,
+        },
+    }
+}

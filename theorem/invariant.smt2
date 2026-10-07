@@ -1,21 +1,29 @@
+(define-state-relation invariant
+    (mac_game r1_game)
+    (= mac_game.mac_real.k r1_game.prf_real.k))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;
-; Invariant --- note that the invariant needs to be global for **all** oracles. 
-;               Having different variants for Oracle & UselessOracle would allow
-;               us to prove wrong statements.
-;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(define-fun randomness-mapping-Mac
+    (
+        (sample-id-in-Mac SampleId)
+        (sample-id-in-Eval SampleId)
+        (offset-in-Mac Int)
+        (offset-in-Eval Int)
+    )
+    Bool
+    (and
+        (= sample-id-in-Mac (sample-id "mac_real" "Mac" "k"))
+        (= sample-id-in-Eval (sample-id "prf_real" "Eval" "k"))
+        (= offset-in-Mac offset-in-Eval)))
 
-(define-fun invariant
-  ( (state-1  <GameState_MediumComposition_<$<!n!>$>>)
-    (state-0  <GameState_SmallComposition_<$<!n!>$>>))
-  Bool
-  (let
-    ; getting ctr out of state
-    ( (ctr-0 (<pkg-state-Rand-<$<!n!>$>-ctr> (<game-SmallComposition-<$<!n!>$>-pkgstate-rand> state-0)))
-      (ctr-1 (<pkg-state-Rand-<$<!n!>$>-ctr> (<game-MediumComposition-<$<!n!>$>-pkgstate-rand> state-1))))
-
-    ; ctr are equal
-    (= ctr-0 ctr-1)))
-
+(define-fun randomness-mapping-Verify
+    (
+        (sample-id-in-Verify SampleId)
+        (sample-id-in-Eval SampleId)
+        (offset-in-Verify Int)
+        (offset-in-Eval Int)
+    )
+    Bool
+    (and
+        (= sample-id-in-Verify (sample-id "mac_real" "Verify" "k"))
+        (= sample-id-in-Eval (sample-id "prf_real" "Eval" "k"))
+        (= offset-in-Verify offset-in-Eval)))

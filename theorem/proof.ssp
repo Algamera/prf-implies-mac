@@ -1,62 +1,105 @@
 theorem Proof {
     const n: Integer;
-  
-    instance small_composition = SmallComposition {
+    const prf: fn Bits(n), Bits(n) -> Bits(n);
+
+    instance mac_real = MAC_real_comp {
+        params {
+            n: n, 
+            prf: prf,
+        }
+    }
+
+    instance r1_real = R1_real {
+        params {
+            n: n,
+            prf: prf,
+        }
+    }
+    instance r1_ideal = R1_ideal {
+        params {
+            n: n,
+            prf: prf,
+        }
+    }
+
+    instance prf_real_game = PRF_real_comp {
+        params {
+            n: n,
+            prf: prf,
+        }
+    }
+
+    instance prf_ideal_game = PRF_ideal_comp {
         params {
             n: n,
         }
     }
 
-    instance medium_composition = MediumComposition {
+    instance r2_real = R2_real {
         params {
             n: n,
+            prf: prf,
         }
     }
 
-    instance medium_composition_more_oracles = MediumCompositionMoreOracles {
-        params {
-            n: n,
-        }
-    }
-
-    instance big_composition = BigComposition {
+    instance r2_ideal = R2_ideal {
         params {
             n: n,
         }
     }
 
     assumptions {
-        Assumption: medium_composition ~ small_composition
+        PRFSecurity: prf_real_game ~ prf_ideal_game
     }
 
     gamehops {
-        equivalence medium_composition small_composition {
-            UsefulOracle: {
-                randomness: simple
+        equivalence mac_real r1_real {
+            invariant: [./theorem/invariant.smt2]
 
-                invariant: [
-                    ./theorem/invariant.smt2
-                ]
+            Mac: {
+                randomness: custom
 
                 lemmas {
                     equal-aborts: []
-                    invariant:    [no-abort]
-                    same-output:  [no-abort]
+                    invariant: [no-abort]
+                    same-output: [no-abort]
+                }
+            }
+            Verify: {
+                randomness: custom
+
+                lemmas {
+                    equal-aborts: []
+                    invariant: [no-abort]
+                    same-output: [no-abort]
                 }
             }
         }
-        reduction big_composition medium_composition_more_oracles  
-        {
-            assumption Assumption
 
-            map small_composition medium_composition_more_oracles {
-                rand    : rand
+        reduction r1_real r1_ideal {
+            assumption PRFSecurity
+
+            map prf_real_game r1_real {
+                prf_real: prf_real
             }
 
-            map medium_composition big_composition {
-                rand    : rand
-                fwd     : fwd
+            map prf_ideal_game r1_ideal {
+                prf_ideal: prf_ideal
+            }
+        }
+
+        reduction r2_real r2_ideal {
+            assumption PRFSecurity
+
+            map prf_real_game r2_real {
+                prf_real: prf_real
+            }
+
+            map prf_ideal_game r2_ideal {
+                prf_ideal: prf_ideal
             }
         }
     }
+
+
 }
